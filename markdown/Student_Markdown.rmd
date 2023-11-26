@@ -1,0 +1,98 @@
+---
+title: "122268"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GitHub Documents
+
+This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+
+## Including Code
+
+You can include R code in the document as follows:
+
+# Student Dropout Prediction Model
+
+## Overview
+
+This project involves the creation of a student dropout prediction model. The process includes:
+
+1. **Setting up the Environment**: Initializing the project environment using `renv` and loading necessary datasets.
+2. **Model Training**: Training a target prediction model using the `caret` package.
+3. **Saving the Model**: Saving the trained model as an `.rds` file for later use.
+4. **Predictions**: Loading the saved model and making predictions on new student data.
+
+## Setting up the Environment
+
+```R
+# Install and initialize renv
+if (!is.element("renv", installed.packages()[, 1])) {
+  install.packages("renv", dependencies = TRUE)
+}
+require("renv")
+renv::init(force = TRUE)
+
+# Load required libraries
+# ... (code for loading libraries and datasets)
+
+# Model Training and Saving
+
+# Train the target prediction model
+# ... (code for training the target prediction model)
+
+# Save the trained model
+saveRDS(target_caret_model_knn, "./models/saved_target_model.rds")
+
+# Load the saved model
+load_target_model <- function(model_path) {
+  loaded_model <- readRDS(model_path)
+  return(loaded_model)
+}
+
+target_model <- load_target_model("./models/saved_target_model.rds")
+
+# Predict dropout using the loaded model
+predict_dropout <- function(model, student_data) {
+  predictions <- predict(model, newdata = student_data)
+  return(predictions)
+}
+
+# Example usage
+student_data <- data.frame(
+  GENDER = '1',
+  AGE = 20,
+  Daytime_evening_attendance = 1,
+  Nacionality = 1
+)
+
+predicted_dropout <- predict_dropout(target_model, student_data)
+print(predicted_dropout)
+
+# Function for predicting dropout
+predict_dropout_function <- function(
+  arg_gender,
+  arg_age,
+  arg_Daytime_evening_attendance,
+  arg_Nacionality
+) {
+  # Create a data frame using the arguments
+  to_be_predicted <- data.frame(
+    GENDER = as.character(arg_gender),
+    AGE = as.numeric(arg_age),
+    Daytime_evening_attendance = as.character(arg_Daytime_evening_attendance),
+    Nacionality = as.numeric(arg_Nacionality)
+  )
+
+  # Predict dropout using the loaded target model
+  predictions_to_be_predicted <- predict_dropout(target_model, to_be_predicted)
+  return(predictions_to_be_predicted)
+}
+
+# Example usage of the predict_dropout_function
+predictions_to_be_predicted <- predict_dropout_function('0', 25, '1', 0)
+print(predictions_to_be_predicted)
+
